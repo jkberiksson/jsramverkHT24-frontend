@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { Trash2 } from 'react-feather';
 
 export default function Documents({ documents, setDocuments }) {
     const getDocs = async () => {
@@ -18,23 +19,30 @@ export default function Documents({ documents, setDocuments }) {
         }
     };
 
+    const handleDelete = async (id) => {
+        try {
+            const res = await fetch(
+                `${import.meta.env.VITE_BACKENDURL}/${id}`,
+                {
+                    method: 'DELETE',
+                }
+            );
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                throw new Error(data.message || 'Something went wrong!');
+            }
+
+            setDocuments(documents.filter((doc) => doc._id !== id));
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
     useEffect(() => {
         getDocs();
     }, []);
-
-    async function handleDelete(id) {
-        const res = await fetch(`${import.meta.env.VITE_BACKENDURL}/${id}`, {
-            method: 'DELETE',
-        });
-
-        const data = await res.json();
-
-        if (!res.ok) {
-            throw new Error(data.message || 'Something went wrong!');
-        }
-
-        setDocuments(documents.filter((doc) => doc._id !== id));
-    }
 
     return (
         <div>
@@ -45,10 +53,8 @@ export default function Documents({ documents, setDocuments }) {
                             <h1>{document.title}</h1>
                             <p>{document.content}</p>
                         </Link>
-                        <button
-                            className='border'
-                            onClick={() => handleDelete(document._id)}>
-                            Delete
+                        <button onClick={() => handleDelete(document._id)}>
+                            <Trash2 color='red' />
                         </button>
                     </div>
                 );

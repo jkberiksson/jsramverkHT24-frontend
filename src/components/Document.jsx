@@ -34,30 +34,38 @@ export default function Document() {
         });
     };
 
-    async function handleSave(event) {
+    const handleSave = async (event) => {
         event.preventDefault();
 
         const dataToSubmit = {
             ...docData,
         };
-        const res = await fetch(`${import.meta.env.VITE_BACKENDURL}/${id}`, {
-            method: 'PUT',
-            body: JSON.stringify(dataToSubmit),
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        });
 
-        const data = await res.json();
+        try {
+            const res = await fetch(
+                `${import.meta.env.VITE_BACKENDURL}/${id}`,
+                {
+                    method: 'PUT',
+                    body: JSON.stringify(dataToSubmit),
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
 
-        if (!res.ok) {
-            throw new Error(data.message || 'Something went wrong!');
+            const data = await res.json();
+
+            if (!res.ok) {
+                throw new Error(data.message || 'Something went wrong!');
+            }
+
+            alert('Document updated');
+
+            setDocument(data);
+        } catch (error) {
+            console.log(error);
         }
-
-        alert('Document updated');
-
-        setDocument(data);
-    }
+    };
 
     useEffect(() => {
         getDoc();

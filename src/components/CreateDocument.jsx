@@ -10,22 +10,26 @@ export default function CreateDocument({ documents, setDocuments }) {
             ...formData,
         };
 
-        const res = await fetch(import.meta.env.VITE_BACKENDURL, {
-            method: 'POST',
-            body: JSON.stringify(dataToSubmit),
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        });
+        try {
+            const res = await fetch(import.meta.env.VITE_BACKENDURL, {
+                method: 'POST',
+                body: JSON.stringify(dataToSubmit),
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
 
-        const data = await res.json();
+            const data = await res.json();
 
-        if (!res.ok) {
-            throw new Error(data.message || 'Something went wrong!');
+            if (!res.ok) {
+                throw new Error(data.message || 'Something went wrong!');
+            }
+
+            setDocuments([...documents, data]);
+            setFormData({ title: '', content: '' });
+        } catch (error) {
+            console.log(error);
         }
-
-        setDocuments([...documents, data]);
-        setFormData({ title: '', content: '' });
     };
 
     const handleInputChange = (event) => {
@@ -39,10 +43,14 @@ export default function CreateDocument({ documents, setDocuments }) {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <label htmlFor='title'>Title</label>
+        <form
+            onSubmit={handleSubmit}
+            className='max-w-2xl mx-auto p-6 bg-white border border-gray-200 rounded-lg shadow-lg mt-6'>
+            <label htmlFor='title' className='block text-lg font-semibold mb-2'>
+                Title
+            </label>
             <input
-                className='border'
+                className='w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
                 type='text'
                 name='title'
                 id='title'
@@ -50,15 +58,21 @@ export default function CreateDocument({ documents, setDocuments }) {
                 onChange={handleInputChange}
                 required
             />
-            <label htmlFor='content'>Content</label>
+            <label
+                htmlFor='content'
+                className='block text-lg font-semibold mb-2'>
+                Content
+            </label>
             <textarea
                 required
-                className='border'
+                className='w-full h-40 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
                 name='content'
                 id='content'
                 value={formData.content}
                 onChange={handleInputChange}></textarea>
-            <button className='border' type='submit'>
+            <button
+                className='px-6 py-2 bg-blue-500 text-white font-semibold rounded-md shadow hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400'
+                type='submit'>
                 Create
             </button>
         </form>
