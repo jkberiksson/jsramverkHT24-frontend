@@ -45,7 +45,7 @@ export default function CreateDocument({ documents, setDocuments }) {
     return (
         <form
             onSubmit={handleSubmit}
-            className='max-w-2xl mx-auto p-6 bg-white border border-gray-200 rounded-lg shadow-lg mt-6'>
+            className='p-6 border border-gray-200 rounded-lg shadow-lg'>
             <label htmlFor='title' className='block text-lg font-semibold mb-2'>
                 Title
             </label>

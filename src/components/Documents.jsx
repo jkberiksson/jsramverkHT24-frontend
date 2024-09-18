@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Trash2 } from 'react-feather';
+import { Trash2, Edit } from 'react-feather';
 
 export default function Documents({ documents, setDocuments }) {
     const getDocs = async () => {
@@ -40,6 +40,11 @@ export default function Documents({ documents, setDocuments }) {
         }
     };
 
+    const formatDate = (isoDate) => {
+        const date = new Date(isoDate);
+        return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
+    };
+
     useEffect(() => {
         getDocs();
     }, []);
@@ -48,14 +53,32 @@ export default function Documents({ documents, setDocuments }) {
         <div>
             {documents.map((document) => {
                 return (
-                    <div key={document._id} className='bg-slate-300 my-5'>
-                        <Link to={document._id}>
-                            <h1>{document.title}</h1>
-                            <p>{document.content}</p>
-                        </Link>
-                        <button onClick={() => handleDelete(document._id)}>
-                            <Trash2 color='red' />
-                        </button>
+                    <div
+                        key={document._id}
+                        className='border border-gray-200 shadow-md rounded-lg my-5 p-6 flex justify-between items-center gap-12'>
+                        <div className='flex flex-col gap-2'>
+                            <h1 className='text-base md:text-lg lg:text-xl font-bold mb-2'>
+                                {document.title}
+                            </h1>
+                            <p className='text-gray-700'>
+                                {document.content.length > 50
+                                    ? `${document.content.slice(0, 120)}...`
+                                    : document.content}
+                            </p>
+                            <p className='text-gray-500 text-xs sm:text-sm mt-2'>
+                                Updated at: {formatDate(document.updatedAt)}
+                            </p>
+                        </div>
+                        <div className='flex gap-4'>
+                            <Link to={document._id} className='text-blue-600'>
+                                <Edit size={24} />
+                            </Link>
+                            <button
+                                className='text-red-600'
+                                onClick={() => handleDelete(document._id)}>
+                                <Trash2 size={24} />
+                            </button>
+                        </div>
                     </div>
                 );
             })}
