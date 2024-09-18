@@ -7,7 +7,7 @@ import Header from './components/Header';
 export default function App() {
     const [documents, setDocuments] = useState([]);
     return (
-        <div>
+        <div className='mx-auto max-w-screen-lg px-3 text-xs md:text-sm lg:text-base font-poppins'>
             <Header />
             <Routes>
                 <Route

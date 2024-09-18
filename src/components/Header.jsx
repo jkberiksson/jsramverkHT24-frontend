@@ -1,9 +1,13 @@
+import { Link } from 'react-router-dom';
+
 export default function Header() {
     return (
-        <header>
-            <h1 className='text-3xl font-bold underline text-center'>
-                Hello Vite!!!!
-            </h1>
+        <header className='mb-6 py-6'>
+            <Link to='/'>
+                <h1 className='text-2xl font-medium inline-block underline'>
+                    JSramverk
+                </h1>
+            </Link>
         </header>
     );
 }
