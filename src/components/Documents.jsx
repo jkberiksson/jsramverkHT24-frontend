@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
 export default function Documents({ documents, setDocuments }) {
     const getDocs = async () => {
@@ -39,10 +40,14 @@ export default function Documents({ documents, setDocuments }) {
         <div>
             {documents.map((document) => {
                 return (
-                    <div key={document._id} className='border my-4'>
-                        <h1>{document.title}</h1>
-                        <p>{document.content}</p>
-                        <button onClick={() => handleDelete(document._id)}>
+                    <div key={document._id} className='bg-slate-300 my-5'>
+                        <Link to={document._id}>
+                            <h1>{document.title}</h1>
+                            <p>{document.content}</p>
+                        </Link>
+                        <button
+                            className='border'
+                            onClick={() => handleDelete(document._id)}>
                             Delete
                         </button>
                     </div>

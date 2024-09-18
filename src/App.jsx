@@ -1,7 +1,7 @@
 import { useState } from 'react';
-
-import CreateDocument from './components/CreateDocument';
-import Documents from './components/Documents';
+import { Routes, Route } from 'react-router-dom';
+import Home from './pages/Home';
+import OneDoc from './pages/OneDoc';
 import Header from './components/Header';
 
 export default function App() {
@@ -9,8 +9,18 @@ export default function App() {
     return (
         <div>
             <Header />
-            <CreateDocument documents={documents} setDocuments={setDocuments} />
-            <Documents documents={documents} setDocuments={setDocuments} />
+            <Routes>
+                <Route
+                    path='/'
+                    element={
+                        <Home
+                            documents={documents}
+                            setDocuments={setDocuments}
+                        />
+                    }
+                />
+                <Route path='/:id' element={<OneDoc />} />
+            </Routes>
         </div>
     );
 }
