@@ -13,6 +13,8 @@ export default function Documents({ documents, setDocuments }) {
                 throw new Error(data.message || 'Something went wrong!');
             }
 
+            data.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+
             setDocuments(data);
         } catch (error) {
             console.log(error);
