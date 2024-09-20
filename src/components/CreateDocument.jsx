@@ -25,7 +25,7 @@ export default function CreateDocument({ documents, setDocuments }) {
                 throw new Error(data.message || 'Something went wrong!');
             }
 
-            setDocuments([...documents, data]);
+            setDocuments([data, ...documents]);
             setFormData({ title: '', content: '' });
         } catch (error) {
             console.log(error);
