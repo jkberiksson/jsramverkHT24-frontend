@@ -72,7 +72,7 @@ export default function Documents({ documents, setDocuments }) {
                             </p>
                         </div>
                         <div className='flex gap-4'>
-                            <Link to={document._id} className='text-blue-600'>
+                            <Link to={`/${document._id}`} className='text-blue-600'>
                                 <Edit size={24} />
                             </Link>
                             <button
