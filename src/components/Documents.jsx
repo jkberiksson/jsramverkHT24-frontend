@@ -63,7 +63,7 @@ export default function Documents({ documents, setDocuments }) {
                                 {document.title}
                             </h1>
                             <p className='text-gray-700'>
-                                {document.content.length > 50
+                                {document.content.length > 120
                                     ? `${document.content.slice(0, 120)}...`
                                     : document.content}
                             </p>
@@ -72,7 +72,9 @@ export default function Documents({ documents, setDocuments }) {
                             </p>
                         </div>
                         <div className='flex gap-4'>
-                            <Link to={`/${document._id}`} className='text-blue-600'>
+                            <Link
+                                to={`/${document._id}`}
+                                className='text-blue-600'>
                                 <Edit size={24} />
                             </Link>
                             <button
