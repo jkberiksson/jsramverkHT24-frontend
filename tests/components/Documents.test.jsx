@@ -1,5 +1,5 @@
-import { it, expect, describe } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { it, expect, describe, afterEach, beforeEach } from 'vitest';
+import { render, screen, cleanup } from '@testing-library/react';
 import Documents from '../../src/components/Documents.jsx';
 import '@testing-library/jest-dom/vitest';
 import { MemoryRouter } from 'react-router-dom';
@@ -17,11 +17,19 @@ describe('Documents tests', () => {
         },
     ];
 
-    render(
-        <MemoryRouter>
-            <Documents documents={documents} />
-        </MemoryRouter>
-    );
+    beforeEach(() => {
+        render(
+            <MemoryRouter>
+                <Documents documents={documents} />
+            </MemoryRouter>
+        );
+    });
+
+    afterEach(() => {
+        cleanup()
+    });
+
+    
 
     it('Should have elements with titles in the document', () => {
         documents.forEach((doc) => {
