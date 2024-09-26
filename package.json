@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "test": "vitest",
     "test:ui": "vitest --ui",
-    "test:c": "vitest --coverage"
+    "test:c": "vitest --coverage",
+    "deploy": "npm run build && rsync -av --delete dist/ paar24@ssh.student.bth.se:www/editor"
   },
   "dependencies": {
     "react": "^18.3.1",
