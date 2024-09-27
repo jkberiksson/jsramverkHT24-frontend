@@ -7,30 +7,13 @@ export default function Document() {
     const params = useParams();
     const id = params.id;
 
-    const getDoc = async () => {
-        try {
-            const res = await fetch(`${import.meta.env.VITE_BACKENDURL}/${id}`);
-
-            const data = await res.json();
-
-            if (!res.ok) {
-                throw new Error(data.message || 'Something went wrong!');
-            }
-
-            setDocument(data);
-            setDocData({ title: data.title, content: data.content });
-        } catch (error) {
-            console.log(error);
-        }
-    };
-
     const handleInputChange = (event) => {
         const { target } = event;
         const { name, value } = target;
 
         setDocData({
-            ...docData, // Keep existing form data
-            [name]: value, // Update form data for the input field that changed
+            ...docData,
+            [name]: value,
         });
     };
 
@@ -73,8 +56,26 @@ export default function Document() {
     };
 
     useEffect(() => {
+        const getDoc = async () => {
+            try {
+                const res = await fetch(
+                    `${import.meta.env.VITE_BACKENDURL}/${id}`
+                );
+
+                const data = await res.json();
+
+                if (!res.ok) {
+                    throw new Error(data.message || 'Something went wrong!');
+                }
+
+                setDocument(data);
+                setDocData({ title: data.title, content: data.content });
+            } catch (error) {
+                console.log(error);
+            }
+        };
         getDoc();
-    }, []);
+    }, [id]);
 
     return (
         <form

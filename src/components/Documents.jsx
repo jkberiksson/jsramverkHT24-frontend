@@ -3,24 +3,6 @@ import { Link } from 'react-router-dom';
 import { Trash2, Edit } from 'react-feather';
 
 export default function Documents({ documents, setDocuments }) {
-    const getDocs = async () => {
-        try {
-            const res = await fetch(import.meta.env.VITE_BACKENDURL);
-
-            const data = await res.json();
-
-            if (!res.ok) {
-                throw new Error(data.message || 'Something went wrong!');
-            }
-
-            data.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
-
-            setDocuments(data);
-        } catch (error) {
-            console.log(error);
-        }
-    };
-
     const handleDelete = async (id) => {
         try {
             const res = await fetch(
@@ -48,8 +30,28 @@ export default function Documents({ documents, setDocuments }) {
     };
 
     useEffect(() => {
+        const getDocs = async () => {
+            try {
+                const res = await fetch(import.meta.env.VITE_BACKENDURL);
+
+                const data = await res.json();
+
+                if (!res.ok) {
+                    throw new Error(data.message || 'Something went wrong!');
+                }
+
+                data.sort(
+                    (a, b) => new Date(b.updatedAt) - new Date(a.updatedAt)
+                );
+
+                setDocuments(data);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
         getDocs();
-    }, []);
+    }, [setDocuments]);
 
     return (
         <div>
