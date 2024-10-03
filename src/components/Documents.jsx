@@ -6,7 +6,7 @@ export default function Documents({ documents, setDocuments }) {
     const handleDelete = async (id) => {
         try {
             const res = await fetch(
-                `${import.meta.env.VITE_BACKENDURL}/${id}`,
+                `${import.meta.env.VITE_BACKENDURL}/documents/${id}`,
                 {
                     method: 'DELETE',
                 }
@@ -32,7 +32,9 @@ export default function Documents({ documents, setDocuments }) {
     useEffect(() => {
         const getDocs = async () => {
             try {
-                const res = await fetch(import.meta.env.VITE_BACKENDURL);
+                const res = await fetch(
+                    `${import.meta.env.VITE_BACKENDURL}/documents`
+                );
 
                 const data = await res.json();
 
