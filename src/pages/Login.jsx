@@ -1,7 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 
-export default function Register() {
+export default function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
@@ -9,10 +9,7 @@ export default function Register() {
     async function handleSubmit(event) {
         event.preventDefault();
 
-        const dataToSubmit = {
-            email,
-            password,
-        };
+        const dataToSubmit = { email, password };
 
         try {
             const res = await fetch(
@@ -20,9 +17,7 @@ export default function Register() {
                 {
                     method: 'POST',
                     body: JSON.stringify(dataToSubmit),
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                 }
             );
 
@@ -36,6 +31,7 @@ export default function Register() {
             setPassword('');
 
             localStorage.setItem('token', JSON.stringify(data.token));
+            localStorage.setItem('email', JSON.stringify(data.email));
 
             navigate('/');
         } catch (error) {

@@ -12,8 +12,9 @@ export default function App() {
 
     useEffect(() => {
         const token = localStorage.getItem('token');
+        const email = localStorage.getItem('email');
 
-        if (!JSON.parse(token)) {
+        if (!JSON.parse(token) || !JSON.parse(email)) {
             navigate('/login');
         }
     }, []);
