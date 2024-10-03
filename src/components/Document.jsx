@@ -26,7 +26,7 @@ export default function Document() {
 
         try {
             const res = await fetch(
-                `${import.meta.env.VITE_BACKENDURL}/${id}`,
+                `${import.meta.env.VITE_BACKENDURL}documents/${id}`,
                 {
                     method: 'PUT',
                     body: JSON.stringify(dataToSubmit),
@@ -59,7 +59,7 @@ export default function Document() {
         const getDoc = async () => {
             try {
                 const res = await fetch(
-                    `${import.meta.env.VITE_BACKENDURL}/${id}`
+                    `${import.meta.env.VITE_BACKENDURL}/documents/${id}`
                 );
 
                 const data = await res.json();
