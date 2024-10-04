@@ -20,7 +20,7 @@ export default function App() {
   }, []);
   return (
     <div className='max-w-5xl mx-auto px-4'>
-      <Header />
+      <Header setDocuments={setDocuments} />
       <Routes>
         <Route path='/' element={<Home documents={documents} setDocuments={setDocuments} />} />
         <Route path='/login' element={<Login />} />
