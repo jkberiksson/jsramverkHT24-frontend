@@ -7,34 +7,26 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 
 export default function App() {
-    const [documents, setDocuments] = useState([]);
-    const navigate = useNavigate();
+  const [documents, setDocuments] = useState([]);
+  const navigate = useNavigate();
 
-    useEffect(() => {
-        const token = localStorage.getItem('token');
-        const email = localStorage.getItem('email');
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    const email = localStorage.getItem('email');
 
-        if (!JSON.parse(token) || !JSON.parse(email)) {
-            navigate('/login');
-        }
-    }, []);
-    return (
-        <div className='max-w-5xl mx-auto px-4'>
-            <Header />
-            <Routes>
-                <Route
-                    path='/'
-                    element={
-                        <Home
-                            documents={documents}
-                            setDocuments={setDocuments}
-                        />
-                    }
-                />
-                <Route path='/login' element={<Login />} />
-                <Route path='/register' element={<Register />} />
-                <Route path='/:id' element={<OneDoc />} />
-            </Routes>
-        </div>
-    );
+    if (!JSON.parse(token) || !JSON.parse(email)) {
+      navigate('/login');
+    }
+  }, []);
+  return (
+    <div className='max-w-5xl mx-auto px-4'>
+      <Header />
+      <Routes>
+        <Route path='/' element={<Home documents={documents} setDocuments={setDocuments} />} />
+        <Route path='/login' element={<Login />} />
+        <Route path='/register' element={<Register />} />
+        <Route path='/:id' element={<OneDoc />} />
+      </Routes>
+    </div>
+  );
 }
