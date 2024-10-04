@@ -78,18 +78,13 @@ export default function Document() {
     }, [id]);
 
     return (
-        <form
-            onSubmit={handleSave}
-            className='p-6 bg-white border border-gray-200 rounded-lg shadow-lg mt-6'>
-            {/* Title Input */}
-            <div className='mb-4'>
-                <label
-                    htmlFor='title'
-                    className='block text-lg font-semibold mb-2'>
+        <form className='py-6 border-b border-gray-800' onSubmit={handleSave}>
+            <div>
+                <label htmlFor='title' className='block text-lg mb-1'>
                     Title
                 </label>
                 <input
-                    className='w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
+                    className='w-full mb-4 px-4 py-2 border border-gray-600 bg-gray-700 rounded-lg text-gray-200 placeholder-gray-500 focus:outline-none'
                     type='text'
                     name='title'
                     id='title'
@@ -98,17 +93,13 @@ export default function Document() {
                     required
                 />
             </div>
-
-            {/* Content Textarea */}
-            <div className='mb-4'>
-                <label
-                    htmlFor='content'
-                    className='block text-lg font-semibold mb-2'>
+            <div>
+                <label htmlFor='content' className='block text-lg mb-1'>
                     Content
                 </label>
                 <textarea
+                    className='w-full mb-4 px-4 py-2 border h-52 border-gray-600 bg-gray-700 rounded-lg text-gray-200 placeholder-gray-500 focus:outline-none'
                     required
-                    className='w-full h-40 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
                     name='content'
                     id='content'
                     value={docData.content}
@@ -117,17 +108,15 @@ export default function Document() {
             <p className='text-gray-500 text-xs sm:text-sm mt-2'>
                 Updated at: {formatDate(document.updatedAt)}
             </p>
-
-            {/* Action Buttons */}
-            <div className='flex justify-between mt-6'>
+            <div className='flex items-center gap-4 mt-4'>
                 <button
-                    className='px-6 py-2 bg-blue-500 text-white font-semibold rounded-md shadow hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400'
+                    className='px-6 py-2 border border-blue-600 bg-blue-600 hover:bg-blue-700 hover:border-blue-700 rounded-lg font-medium focus:outline-none'
                     type='submit'>
                     Save
                 </button>
                 <Link
-                    to='/'
-                    className='px-6 py-2 bg-gray-200 text-gray-700 font-semibold rounded-md shadow hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400'>
+                    className='px-6 py-2 border border-blue-700 rounded-lg focus:outline-none  font-medium'
+                    to='/'>
                     Back
                 </Link>
             </div>

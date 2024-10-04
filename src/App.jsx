@@ -19,7 +19,7 @@ export default function App() {
         }
     }, []);
     return (
-        <div className='mx-auto max-w-screen-lg px-3 text-xs md:text-sm lg:text-base font-poppins'>
+        <div className='max-w-5xl mx-auto px-4'>
             <Header />
             <Routes>
                 <Route

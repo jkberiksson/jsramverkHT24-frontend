@@ -40,38 +40,59 @@ export default function Login() {
     }
 
     return (
-        <form onSubmit={handleSubmit}>
-            <h1 className='text-3xl mb-5'>Login</h1>
-            <label className='block text-lg font-semibold mb-2' htmlFor=''>
-                Email
-            </label>
-            <input
-                type='text'
-                name='email'
-                id='email'
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className='w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
-            />
-            <label className='block text-lg font-semibold mb-2' htmlFor=''>
-                Password
-            </label>
-            <input
-                type='password'
-                name='password'
-                id='password'
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className='w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
-            />
-            <button
-                className='px-6 py-2 bg-blue-500 text-white font-semibold rounded-md shadow hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400'
-                type='submit'>
-                Login
-            </button>
-            <Link to='/register'>
-                <p>Not a member? Register!</p>
-            </Link>
-        </form>
+        <div className='absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-11/12 max-w-md p-8 space-y-6 bg-gray-800 shadow-lg rounded-lg'>
+            <h1 className='text-2xl font-medium text-center'>Login</h1>
+            <form onSubmit={handleSubmit} className='space-y-4'>
+                <div>
+                    <label
+                        className='block text-sm font-medium text-gray-400'
+                        htmlFor='email'>
+                        Email
+                    </label>
+                    <input
+                        type='text'
+                        name='email'
+                        id='email'
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className='w-full mt-1 px-4 py-2 border border-gray-600 bg-gray-700 rounded-lg text-gray-200 placeholder-gray-500 focus:outline-none'
+                        placeholder='you@example.com'
+                    />
+                </div>
+                <div>
+                    <label
+                        className='block text-sm font-medium text-gray-400'
+                        htmlFor='password'>
+                        Password
+                    </label>
+                    <input
+                        type='password'
+                        name='password'
+                        id='password'
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        className='w-full mt-1 px-4 py-2 border border-gray-600 bg-gray-700 rounded-lg text-gray-200 placeholder-gray-500 focus:outline-none'
+                        placeholder='••••••••'
+                    />
+                </div>
+                <div>
+                    <button
+                        type='submit'
+                        className='w-full px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg font-medium text-center focus:outline-none'>
+                        Login
+                    </button>
+                </div>
+            </form>
+            <div className='text-center'>
+                <p className='text-gray-400'>
+                    Not a member?{' '}
+                    <Link
+                        to='/register'
+                        className='text-blue-500 hover:underline'>
+                        Register
+                    </Link>
+                </p>
+            </div>
+        </div>
     );
 }
