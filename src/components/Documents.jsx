@@ -9,6 +9,11 @@ export default function Documents({ documents, setDocuments }) {
                 `${import.meta.env.VITE_BACKENDURL}/documents/${id}`,
                 {
                     method: 'DELETE',
+                    headers: {
+                        'x-access-token': JSON.parse(
+                            localStorage.getItem('token')
+                        ),
+                    },
                 }
             );
 
@@ -33,7 +38,14 @@ export default function Documents({ documents, setDocuments }) {
         const getDocs = async () => {
             try {
                 const res = await fetch(
-                    `${import.meta.env.VITE_BACKENDURL}/documents`
+                    `${import.meta.env.VITE_BACKENDURL}/documents`,
+                    {
+                        headers: {
+                            'x-access-token': JSON.parse(
+                                localStorage.getItem('token')
+                            ),
+                        },
+                    }
                 );
 
                 const data = await res.json();

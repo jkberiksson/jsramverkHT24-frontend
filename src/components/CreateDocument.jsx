@@ -11,13 +11,19 @@ export default function CreateDocument({ documents, setDocuments }) {
         };
 
         try {
-            const res = await fetch(import.meta.env.VITE_BACKENDURL, {
-                method: 'POST',
-                body: JSON.stringify(dataToSubmit),
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
+            const res = await fetch(
+                `${import.meta.env.VITE_BACKENDURL}/documents`,
+                {
+                    method: 'POST',
+                    body: JSON.stringify(dataToSubmit),
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-access-token': JSON.parse(
+                            localStorage.getItem('token')
+                        ),
+                    },
+                }
+            );
 
             const data = await res.json();
 

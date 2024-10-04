@@ -26,12 +26,15 @@ export default function Document() {
 
         try {
             const res = await fetch(
-                `${import.meta.env.VITE_BACKENDURL}documents/${id}`,
+                `${import.meta.env.VITE_BACKENDURL}/documents/${id}`,
                 {
                     method: 'PUT',
                     body: JSON.stringify(dataToSubmit),
                     headers: {
                         'Content-Type': 'application/json',
+                        'x-access-token': JSON.parse(
+                            localStorage.getItem('token')
+                        ),
                     },
                 }
             );
@@ -59,7 +62,14 @@ export default function Document() {
         const getDoc = async () => {
             try {
                 const res = await fetch(
-                    `${import.meta.env.VITE_BACKENDURL}/documents/${id}`
+                    `${import.meta.env.VITE_BACKENDURL}/documents/${id}`,
+                    {
+                        headers: {
+                            'x-access-token': JSON.parse(
+                                localStorage.getItem('token')
+                            ),
+                        },
+                    }
                 );
 
                 const data = await res.json();
