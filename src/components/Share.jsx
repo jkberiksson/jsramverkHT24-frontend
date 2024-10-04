@@ -13,7 +13,7 @@ export default function Share({ setToggleShare, id }) {
     };
 
     try {
-      const res = await fetch(`${import.meta.env.VITE_BACKENDURL}/documents/share`, {
+      const res = await fetch(`${import.meta.env.VITE_BACKENDURL}/share`, {
         method: 'PUT',
         body: JSON.stringify(dataToSubmit),
         headers: {
