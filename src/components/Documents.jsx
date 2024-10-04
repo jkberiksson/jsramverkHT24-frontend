@@ -9,6 +9,11 @@ export default function Documents({ documents, setDocuments }) {
                 `${import.meta.env.VITE_BACKENDURL}/documents/${id}`,
                 {
                     method: 'DELETE',
+                    headers: {
+                        'x-access-token': JSON.parse(
+                            localStorage.getItem('token')
+                        ),
+                    },
                 }
             );
 
@@ -33,7 +38,14 @@ export default function Documents({ documents, setDocuments }) {
         const getDocs = async () => {
             try {
                 const res = await fetch(
-                    `${import.meta.env.VITE_BACKENDURL}/documents`
+                    `${import.meta.env.VITE_BACKENDURL}/documents`,
+                    {
+                        headers: {
+                            'x-access-token': JSON.parse(
+                                localStorage.getItem('token')
+                            ),
+                        },
+                    }
                 );
 
                 const data = await res.json();
@@ -60,31 +72,31 @@ export default function Documents({ documents, setDocuments }) {
             {documents.map((document) => {
                 return (
                     <div
-                        key={document._id}
-                        className='border border-gray-200 shadow-md rounded-lg my-5 p-6 flex justify-between items-center gap-12'>
-                        <div className='flex flex-col gap-2'>
-                            <h1 className='text-base md:text-lg lg:text-xl font-bold mb-2'>
+                        className='border-b border-gray-800 rounded-sm my-3 p-3 flex justify-between items-center gap-12'
+                        key={document._id}>
+                        <div>
+                            <h1 className='text-base md:text-xl font-medium mb-2'>
                                 {document.title}
                             </h1>
-                            <p className='text-gray-700'>
+                            <p className='text-gray-400 font-light'>
                                 {document.content.length > 120
                                     ? `${document.content.slice(0, 120)}...`
                                     : document.content}
                             </p>
-                            <p className='text-gray-500 text-xs sm:text-sm mt-2'>
+                            <p className='text-gray-600 text-xs mt-5'>
                                 Updated at: {formatDate(document.updatedAt)}
                             </p>
                         </div>
-                        <div className='flex gap-4'>
+                        <div className='flex gap-3'>
                             <Link
-                                to={`/${document._id}`}
-                                className='text-blue-600'>
-                                <Edit size={24} />
+                                className='bg-violet-500 hover:bg-violet-600 p-2 rounded-md'
+                                to={`/${document._id}`}>
+                                <Edit size={18} />
                             </Link>
                             <button
-                                className='text-red-600'
+                                className='bg-red-500 hover:bg-red-600 p-2 rounded-md'
                                 onClick={() => handleDelete(document._id)}>
-                                <Trash2 size={24} />
+                                <Trash2 size={18} />
                             </button>
                         </div>
                     </div>
