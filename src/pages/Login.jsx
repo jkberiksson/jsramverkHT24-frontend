@@ -28,17 +28,14 @@ export default function Login() {
         throw new Error(data.message || 'An error occurred. Please try again.');
       }
 
-      setEmail('');
-      setPassword('');
-
       localStorage.setItem('token', JSON.stringify(data.token));
       localStorage.setItem('email', JSON.stringify(data.email));
       navigate('/');
     } catch (error) {
       setErrorMessage(error.message);
+    } finally {
       setEmail('');
       setPassword('');
-    } finally {
       setIsSubmitting(false);
     }
   }

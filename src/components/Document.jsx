@@ -30,10 +30,9 @@ export default function Document({ setDocuments }) {
 
         const data = await res.json();
 
-        if (data.message === 'No user found with provided ID') {
+        if (data.message === 'No document found with provided ID') {
           navigate('/error');
         }
-
         if (!res.ok) {
           throw new Error(data.message || 'An error occurred. Please try again.');
         }

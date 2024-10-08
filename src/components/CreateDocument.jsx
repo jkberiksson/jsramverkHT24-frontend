@@ -42,12 +42,12 @@ export default function CreateDocument({ documents, setDocuments }) {
       }
 
       setDocuments([data, ...documents]);
-      setTitle('');
-      setContent('');
     } catch (error) {
       setErrorMessage(error.message);
     } finally {
       setIsSubmitting(false);
+      setTitle('');
+      setContent('');
     }
   }
 

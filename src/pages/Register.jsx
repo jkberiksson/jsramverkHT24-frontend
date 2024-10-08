@@ -28,15 +28,12 @@ export default function Register() {
         throw new Error(data.message || 'An error occurred. Please try again.');
       }
 
-      setEmail('');
-      setPassword('');
-
       navigate('/login');
     } catch (error) {
       setErrorMessage(error.message);
+    } finally {
       setEmail('');
       setPassword('');
-    } finally {
       setIsSubmitting(false);
     }
   }
