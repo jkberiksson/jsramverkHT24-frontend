@@ -1,135 +1,153 @@
 import { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 
-export default function Document() {
-    const [document, setDocument] = useState({});
-    const [docData, setDocData] = useState({ title: '', content: '' });
-    const params = useParams();
-    const id = params.id;
+export default function Document({ setDocuments }) {
+  const [title, setTitle] = useState('');
+  const [content, setContent] = useState('');
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [document, setDocument] = useState({});
+  const params = useParams();
+  const navigate = useNavigate();
+  const id = params.id;
 
-    const handleInputChange = (event) => {
-        const { target } = event;
-        const { name, value } = target;
-
-        setDocData({
-            ...docData,
-            [name]: value,
+  useEffect(() => {
+    const getDoc = async () => {
+      setIsLoading(true);
+      try {
+        const res = await fetch(`${import.meta.env.VITE_BACKENDURL}/documents/${id}`, {
+          headers: {
+            'x-access-token': JSON.parse(localStorage.getItem('token')),
+          },
         });
-    };
 
-    const handleSave = async (event) => {
-        event.preventDefault();
-
-        const dataToSubmit = {
-            ...docData,
-        };
-
-        try {
-            const res = await fetch(
-                `${import.meta.env.VITE_BACKENDURL}/documents/${id}`,
-                {
-                    method: 'PUT',
-                    body: JSON.stringify(dataToSubmit),
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'x-access-token': JSON.parse(
-                            localStorage.getItem('token')
-                        ),
-                    },
-                }
-            );
-
-            const data = await res.json();
-
-            if (!res.ok) {
-                throw new Error(data.message || 'Something went wrong!');
-            }
-
-            alert('Document updated');
-
-            setDocument(data);
-        } catch (error) {
-            console.log(error);
+        if (res.status === 401) {
+          localStorage.clear();
+          setDocuments([]);
+          navigate('/login');
         }
+
+        const data = await res.json();
+
+        if (data.message === 'No user found with provided ID') {
+          navigate('/error');
+        }
+
+        if (!res.ok) {
+          throw new Error(data.message || 'An error occurred. Please try again.');
+        }
+
+        setDocument(data);
+        setTitle(data.title);
+        setContent(data.content);
+      } catch (error) {
+        setErrorMessage(error.message);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    getDoc();
+  }, [id]);
+
+  async function handleSubmit(event) {
+    event.preventDefault();
+    setErrorMessage(null);
+    setIsSubmitting(true);
+
+    const dataToSubmit = {
+      title,
+      content,
     };
 
-    const formatDate = (isoDate) => {
-        const date = new Date(isoDate);
-        return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
-    };
+    try {
+      const res = await fetch(`${import.meta.env.VITE_BACKENDURL}/documents/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify(dataToSubmit),
+        headers: {
+          'Content-Type': 'application/json',
+          'x-access-token': JSON.parse(localStorage.getItem('token')),
+        },
+      });
 
-    useEffect(() => {
-        const getDoc = async () => {
-            try {
-                const res = await fetch(
-                    `${import.meta.env.VITE_BACKENDURL}/documents/${id}`,
-                    {
-                        headers: {
-                            'x-access-token': JSON.parse(
-                                localStorage.getItem('token')
-                            ),
-                        },
-                    }
-                );
+      if (res.status === 401) {
+        localStorage.clear();
+        setDocuments([]);
+        navigate('/login');
+      }
 
-                const data = await res.json();
+      const data = await res.json();
 
-                if (!res.ok) {
-                    throw new Error(data.message || 'Something went wrong!');
-                }
+      if (!res.ok) {
+        throw new Error(data.message || 'An error occurred. Please try again.');
+      }
 
-                setDocument(data);
-                setDocData({ title: data.title, content: data.content });
-            } catch (error) {
-                console.log(error);
-            }
-        };
-        getDoc();
-    }, [id]);
+      alert('Document updated');
+      setDocument(data);
+      setErrorMessage(null);
+    } catch (error) {
+      setErrorMessage(error.message);
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
 
+  function formatDate(isoDate) {
+    const date = new Date(isoDate);
+    return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
+  }
+
+  if (isLoading) {
     return (
-        <form className='py-6 border-b border-gray-800' onSubmit={handleSave}>
-            <div>
-                <label htmlFor='title' className='block text-lg mb-1'>
-                    Title
-                </label>
-                <input
-                    className='w-full mb-4 px-4 py-2 border border-gray-600 bg-gray-700 rounded-lg text-gray-200 placeholder-gray-500 focus:outline-none'
-                    type='text'
-                    name='title'
-                    id='title'
-                    value={docData.title}
-                    onChange={handleInputChange}
-                    required
-                />
-            </div>
-            <div>
-                <label htmlFor='content' className='block text-lg mb-1'>
-                    Content
-                </label>
-                <textarea
-                    className='w-full mb-4 px-4 py-2 border h-52 border-gray-600 bg-gray-700 rounded-lg text-gray-200 placeholder-gray-500 focus:outline-none'
-                    required
-                    name='content'
-                    id='content'
-                    value={docData.content}
-                    onChange={handleInputChange}></textarea>
-            </div>
-            <p className='text-gray-500 text-xs sm:text-sm mt-2'>
-                Updated at: {formatDate(document.updatedAt)}
-            </p>
-            <div className='flex items-center gap-4 mt-4'>
-                <button
-                    className='px-6 py-2 border border-blue-600 bg-blue-600 hover:bg-blue-700 hover:border-blue-700 rounded-lg font-medium focus:outline-none'
-                    type='submit'>
-                    Save
-                </button>
-                <Link
-                    className='px-6 py-2 border border-blue-700 rounded-lg focus:outline-none  font-medium'
-                    to='/'>
-                    Back
-                </Link>
-            </div>
-        </form>
+      <div className='flex items-center justify-center my-4'>
+        <div className='animate-spin rounded-full border-4 border-blue-600 border-t-transparent w-16 h-16'></div>
+      </div>
     );
+  }
+
+  if (errorMessage) {
+    return <div className='text-red-500 my-4'>{errorMessage}</div>;
+  }
+
+  return (
+    <form className='py-6 border-b border-gray-800' onSubmit={handleSubmit}>
+      <h2 className='text-xl font-medium mb-4'>Edit Document</h2>
+      <label htmlFor='title' className='block text-lg mb-1'>
+        Title
+      </label>
+      <input
+        className='w-full mb-4 px-4 py-2 border border-gray-600 bg-gray-700 rounded-lg text-gray-200 placeholder-gray-500 focus:outline-none'
+        type='text'
+        name='title'
+        id='title'
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+        required
+      />
+      <label htmlFor='content' className='block text-lg mb-1'>
+        Content
+      </label>
+      <textarea
+        required
+        className='w-full mb-4 px-4 py-2 border h-52 border-gray-600 bg-gray-700 rounded-lg text-gray-200 placeholder-gray-500 focus:outline-none'
+        name='content'
+        id='content'
+        value={content}
+        onChange={(e) => setContent(e.target.value)}></textarea>
+      <p className='text-gray-500 text-xs sm:text-sm mt-2'>Updated at: {formatDate(document.updatedAt)}</p>
+      <div className='flex items-center gap-4 mt-4'>
+        <button
+          className={`px-6 py-2 border border-blue-600 bg-blue-600 hover:bg-blue-700 hover:border-blue-700 rounded-lg font-medium focus:outline-none ${
+            isSubmitting ? 'opacity-50 cursor-not-allowed' : ''
+          }`}
+          type='submit'
+          disabled={isSubmitting}>
+          {isSubmitting ? 'Saving...' : 'Save'}
+        </button>
+        <Link className='px-6 py-2 border border-blue-700 rounded-lg focus:outline-none font-medium' to='/'>
+          Back
+        </Link>
+      </div>
+    </form>
+  );
 }

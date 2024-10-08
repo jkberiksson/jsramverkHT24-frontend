@@ -14,7 +14,7 @@ export default function Home({ documents, setDocuments }) {
 
   return (
     <>
-      {toggleShare && <Share setToggleShare={setToggleShare} id={id} />}
+      {toggleShare && <Share setToggleShare={setToggleShare} id={id} setDocuments={setDocuments} />}
       <CreateDocument documents={documents} setDocuments={setDocuments} />
       <Documents documents={documents} setDocuments={setDocuments} handleShare={handleShare} />
     </>

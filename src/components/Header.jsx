@@ -18,9 +18,7 @@ export default function Header({ setDocuments }) {
       {parsedEmail && (
         <div className='flex items-center gap-6'>
           <p>{parsedEmail}</p>
-          <button
-            onClick={logout}
-            className='w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg font-medium text-center focus:outline-none'>
+          <button onClick={logout} className='w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg font-medium text-center focus:outline-none'>
             Logout
           </button>
         </div>
