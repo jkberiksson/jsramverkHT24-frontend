@@ -1,12 +1,43 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { X } from 'react-feather';
 import { useNavigate } from 'react-router-dom';
 
 export default function Share({ setToggleShare, id, setDocuments }) {
   const [email, setEmail] = useState('');
+  const [users, setUsers] = useState([]);
   const [errorMessage, setErrorMessage] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const getUsers = async () => {
+      try {
+        const res = await fetch(`${import.meta.env.VITE_BACKENDURL}/users`, {
+          headers: {
+            'x-access-token': JSON.parse(localStorage.getItem('token')),
+          },
+        });
+
+        if (res.status === 401) {
+          localStorage.clear();
+          setDocuments([]);
+          navigate('/login');
+        }
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.message || 'An error occurred. Please try again.');
+        }
+
+        setUsers(data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    getUsers();
+  }, []);
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -19,6 +50,10 @@ export default function Share({ setToggleShare, id, setDocuments }) {
     };
 
     try {
+      if (!email) {
+        throw new Error('Please provide an email!');
+      }
+
       const res = await fetch(`${import.meta.env.VITE_BACKENDURL}/share`, {
         method: 'PUT',
         body: JSON.stringify(dataToSubmit),
@@ -57,18 +92,22 @@ export default function Share({ setToggleShare, id, setDocuments }) {
         </div>
         {errorMessage && <div className='text-red-500 text-center mb-6'>{errorMessage}</div>}
         <div>
-          <input
-            type='email'
+          <select
             name='email'
             id='email'
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className='w-full mt-1 px-4 py-2 mb-6 border border-gray-600 bg-gray-700 rounded-lg text-gray-200 placeholder-gray-500 focus:outline-none'
-            placeholder='Enter recipient email'
-            required
-          />
+            className='w-full mb-6 px-4 py-2 border border-gray-600 bg-gray-700 rounded-lg text-gray-200 placeholder-gray-500 focus:outline-none'>
+            <option value='' disabled>
+              Select a recipient
+            </option>
+            {users.map((user, index) => (
+              <option key={index} value={user.email}>
+                {user.email}
+              </option>
+            ))}
+          </select>
         </div>
-
         <div>
           <button
             type='submit'
