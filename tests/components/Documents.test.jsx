@@ -26,34 +26,32 @@ describe('Documents tests', () => {
     });
 
     afterEach(() => {
-        cleanup()
+        cleanup();
     });
 
-    
-
-    it('Should have elements with titles in the document', () => {
-        documents.forEach((doc) => {
-            const titleElement = screen.getByText(doc.title);
+    it('Should have elements with titles in the document', async () => {
+        documents.forEach(async (doc) => {
+            const titleElement = await screen.findByText(doc.title);
             expect(titleElement).toBeInTheDocument();
         });
     });
 
-    it('Should have truncated and non truncated content in the document', () => {
-        documents.forEach((doc) => {
+    it('Should have truncated and non truncated content in the document', async () => {
+        documents.forEach(async (doc) => {
             if (doc.content.length > 120) {
                 const truncatedContent = `${doc.content.slice(0, 120)}...`;
-                const contentElement = screen.getByText(truncatedContent);
+                const contentElement = await screen.findByText(truncatedContent);
                 expect(contentElement).toBeInTheDocument();
             } else {
-                const contentElement = screen.getByText(doc.content);
+                const contentElement = await screen.findByText(doc.content);
                 expect(contentElement).toBeInTheDocument();
             }
         });
     });
 
-    it('Should have links going to individual document', () => {
-        documents.forEach((doc, index) => {
-            const links = screen.getAllByRole('link');
+    it('Should have links going to individual document', async () => {
+        documents.forEach(async (doc, index) => {
+            const links = await screen.findAllByRole('link');
             const linkElement = links[index];
             expect(linkElement).toHaveAttribute('href', `/${doc._id}`);
         });

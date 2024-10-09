@@ -58,8 +58,6 @@ export default function Documents({ documents, setDocuments, handleShare }) {
                     navigate('/login');
                 }
 
-                console.log(res);
-
                 const data = await res.json();
 
                 if (!res.ok) {
@@ -109,9 +107,14 @@ export default function Documents({ documents, setDocuments, handleShare }) {
                                 <Link className='bg-green-500 hover:bg-green-600 p-2 rounded-md' to={`/documents/${document._id}`}>
                                     <Edit size={18} />
                                 </Link>
-                                <button className='bg-blue-500 hover:bg-blue-600 p-2 rounded-md' onClick={() => handleShare(document._id)}>
-                                    <Share size={18} />
-                                </button>
+
+                                {document.creator === JSON.parse(localStorage.getItem('email')) ? (
+                                    <button className='bg-blue-500 hover:bg-blue-600 p-2 rounded-md' onClick={() => handleShare(document._id)}>
+                                        <Share size={18} />
+                                    </button>
+                                ) : (
+                                    ''
+                                )}
                                 <button className='bg-red-500 hover:bg-red-600 p-2 rounded-md' onClick={() => handleDelete(document._id)}>
                                     <Trash2 size={18} />
                                 </button>
