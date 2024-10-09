@@ -4,19 +4,19 @@ import Documents from '../components/Documents';
 import Share from '../components/Share';
 
 export default function Home({ documents, setDocuments }) {
-  const [toggleShare, setToggleShare] = useState(false);
-  const [id, setId] = useState();
+    const [toggleShare, setToggleShare] = useState(false);
+    const [id, setId] = useState();
 
-  function handleShare(id) {
-    setToggleShare(true);
-    setId(id);
-  }
+    function handleShare(id) {
+        setToggleShare(true);
+        setId(id);
+    }
 
-  return (
-    <>
-      {toggleShare && <Share setToggleShare={setToggleShare} id={id} />}
-      <CreateDocument documents={documents} setDocuments={setDocuments} />
-      <Documents documents={documents} setDocuments={setDocuments} handleShare={handleShare} />
-    </>
-  );
+    return (
+        <>
+            {toggleShare && <Share setToggleShare={setToggleShare} id={id} setDocuments={setDocuments} />}
+            <CreateDocument documents={documents} setDocuments={setDocuments} />
+            <Documents documents={documents} setDocuments={setDocuments} handleShare={handleShare} />
+        </>
+    );
 }

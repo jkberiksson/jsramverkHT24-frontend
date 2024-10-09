@@ -2,50 +2,53 @@ import { it, expect, describe, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent, cleanup } from '@testing-library/react';
 import CreateDocument from '../../src/components/CreateDocument.jsx';
 import '@testing-library/jest-dom/vitest';
+import { BrowserRouter } from 'react-router-dom';
 
 describe('CreateDocument', () => {
-    let documents = [];
-    let setDocuments = vi.fn();
+  let documents = [];
+  let setDocuments = vi.fn();
 
-    beforeEach(() => {
-        render(
-            <CreateDocument documents={documents} setDocuments={setDocuments} />
-        );
-    });
+  beforeEach(() => {
+    render(
+      <BrowserRouter>
+        <CreateDocument documents={documents} setDocuments={setDocuments} />
+      </BrowserRouter>
+    );
+  });
 
-    afterEach(() => {
-        cleanup();
-    });
+  afterEach(() => {
+    cleanup();
+  });
 
-    it('should render a form with the inputs and a button', () => {
-        const input = screen.getByLabelText(/title/i);
-        expect(input).toBeInTheDocument();
+  it('should render a form with the inputs and a button', () => {
+    const input = screen.getByLabelText(/title/i);
+    expect(input).toBeInTheDocument();
 
-        const textarea = screen.getByLabelText(/content/i);
-        expect(textarea).toBeInTheDocument();
+    const textarea = screen.getByLabelText(/content/i);
+    expect(textarea).toBeInTheDocument();
 
-        const button = screen.getByRole('button', { name: /create/i });
-        expect(button).toBeInTheDocument();
-    });
+    const button = screen.getByRole('button', { name: /create/i });
+    expect(button).toBeInTheDocument();
+  });
 
-    it('should update input fields when user types', () => {
-        const input = screen.getByLabelText(/title/i);
-        fireEvent.change(input, { target: { value: 'Testing title' } });
-        expect(input.value).toBe('Testing title');
+  it('should update input fields when user types', () => {
+    const input = screen.getByLabelText(/title/i);
+    fireEvent.change(input, { target: { value: 'Testing title' } });
+    expect(input.value).toBe('Testing title');
 
-        const textarea = screen.getByLabelText(/content/i);
-        fireEvent.change(textarea, { target: { value: 'Testing Content' } });
-        expect(textarea.value).toBe('Testing Content');
-    });
+    const textarea = screen.getByLabelText(/content/i);
+    fireEvent.change(textarea, { target: { value: 'Testing Content' } });
+    expect(textarea.value).toBe('Testing Content');
+  });
 
-    it('should have empty fields on successful submission', async () => {
-        const input = screen.getByLabelText(/title/i);
-        const textarea = screen.getByLabelText(/content/i);
-        const button = screen.getByRole('button', { name: /create/i });
+  it('should have empty fields on successful submission', async () => {
+    const input = screen.getByLabelText(/title/i);
+    const textarea = screen.getByLabelText(/content/i);
+    const button = screen.getByRole('button', { name: /create/i });
 
-        fireEvent.click(button);
+    fireEvent.click(button);
 
-        expect(input.value).toBe('');
-        expect(textarea.value).toBe('');
-    });
+    expect(input.value).toBe('');
+    expect(textarea.value).toBe('');
+  });
 });

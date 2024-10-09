@@ -5,6 +5,7 @@ import OneDoc from './pages/OneDoc';
 import Header from './components/Header';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import Error from './pages/Error';
 
 export default function App() {
   const [documents, setDocuments] = useState([]);
@@ -23,9 +24,10 @@ export default function App() {
       <Header setDocuments={setDocuments} />
       <Routes>
         <Route path='/' element={<Home documents={documents} setDocuments={setDocuments} />} />
+        <Route path='/documents/:id' element={<OneDoc documents={documents} />} />
         <Route path='/login' element={<Login />} />
         <Route path='/register' element={<Register />} />
-        <Route path='/:id' element={<OneDoc />} />
+        <Route path='/*' element={<Error />} />
       </Routes>
     </div>
   );
