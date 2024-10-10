@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Trash2 } from 'react-feather';
 import io from 'socket.io-client';
@@ -14,8 +14,8 @@ export default function Document({ setDocuments }) {
     const params = useParams();
     const navigate = useNavigate();
     const id = params.id;
-    const origin = process.env.NODE_ENV === 'production' ? import.meta.env.VITE_BACKENDURL : 'http://localhost:3000';
-    const socket = io.connect(origin);
+    const origin = /* import.meta.env.VITE_BACKENDURL || */ 'http://localhost:3000';
+    const socket = useRef(null);
 
     useEffect(() => {
         const getDoc = async () => {
@@ -65,18 +65,19 @@ export default function Document({ setDocuments }) {
     const handleContentChange = (e) => {
         const updatedContent = e.target.value;
         setContent(updatedContent);
-        socket.emit('send_message', { content: updatedContent, docId: id });
+        socket.current.emit('send_message', { content: updatedContent, docId: id });
     };
 
     useEffect(() => {
-        socket.emit('join_room', id);
+        socket.current = io.connect(origin);
+        socket.current.emit('join_room', id);
 
-        socket.on('receive_message', (data) => {
+        socket.current.on('receive_message', (data) => {
             setContent(data.content);
         });
 
         return () => {
-            socket.disconnect();
+            socket.current.disconnect();
         };
     }, []);
 

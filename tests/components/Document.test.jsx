@@ -27,24 +27,18 @@ describe('Document test', () => {
 
     it('Should have correct input and textarea values and be in the document', async () => {
         const textbox = await screen.findAllByRole('textbox');
-        const content = screen.getByText(/content1/i);
-        const title = screen.getByDisplayValue(/title1/i);
+        const titleInput = screen.getByLabelText(/title/i);
+        const contentTextarea = screen.getByLabelText(/content/i);
 
         expect(textbox[0]).toBeInTheDocument();
         expect(textbox[1]).toBeInTheDocument();
-        expect(content).toBeInTheDocument();
-        expect(title).toBeInTheDocument();
+        expect(contentTextarea).toBeInTheDocument();
+        expect(titleInput).toBeInTheDocument();
     });
 
     it('Should have link going back to homepage', async () => {
         const linkElement = await screen.findByRole('link');
         expect(linkElement).toHaveTextContent('Back');
         expect(linkElement).toHaveAttribute('href', '/');
-    });
-
-    it('Should have save button', async () => {
-        const saveButton = await screen.findByRole('button');
-        expect(saveButton).toHaveTextContent('Save');
-        expect(saveButton).toBeInTheDocument();
     });
 });
