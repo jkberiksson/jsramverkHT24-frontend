@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Trash2 } from 'react-feather';
+import io from 'socket.io-client';
 
 export default function Document({ setDocuments }) {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [errorMessage, setErrorMessage] = useState(null);
-    const [isSubmitting, setIsSubmitting] = useState(false);
     const [docAccess, setDocAccess] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isLoadingUnshare, setIsLoadingUnshare] = useState(false);
@@ -19,16 +19,11 @@ export default function Document({ setDocuments }) {
         const getDoc = async () => {
             setIsLoading(true);
             try {
-                const res = await fetch(
-                    `${import.meta.env.VITE_BACKENDURL}/documents/${id}`,
-                    {
-                        headers: {
-                            'x-access-token': JSON.parse(
-                                localStorage.getItem('token')
-                            ),
-                        },
-                    }
-                );
+                const res = await fetch(`${import.meta.env.VITE_BACKENDURL}/documents/${id}`, {
+                    headers: {
+                        'x-access-token': JSON.parse(localStorage.getItem('token')),
+                    },
+                });
 
                 if (res.status === 401) {
                     localStorage.clear();
@@ -43,9 +38,7 @@ export default function Document({ setDocuments }) {
                 }
 
                 if (!res.ok) {
-                    throw new Error(
-                        data.message || 'An error occurred. Please try again.'
-                    );
+                    throw new Error(data.message || 'An error occurred. Please try again.');
                 }
 
                 setDocument(data);
@@ -61,55 +54,6 @@ export default function Document({ setDocuments }) {
         getDoc();
     }, [id]);
 
-    async function handleSubmit(event) {
-        event.preventDefault();
-        setErrorMessage(null);
-        setIsSubmitting(true);
-
-        const dataToSubmit = {
-            title,
-            content,
-        };
-
-        try {
-            const res = await fetch(
-                `${import.meta.env.VITE_BACKENDURL}/documents/${id}`,
-                {
-                    method: 'PUT',
-                    body: JSON.stringify(dataToSubmit),
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'x-access-token': JSON.parse(
-                            localStorage.getItem('token')
-                        ),
-                    },
-                }
-            );
-
-            if (res.status === 401) {
-                localStorage.clear();
-                setDocuments([]);
-                navigate('/login');
-            }
-
-            const data = await res.json();
-
-            if (!res.ok) {
-                throw new Error(
-                    data.message || 'An error occurred. Please try again.'
-                );
-            }
-
-            alert('Document updated');
-            setDocument(data);
-            setErrorMessage(null);
-        } catch (error) {
-            setErrorMessage(error.message);
-        } finally {
-            setIsSubmitting(false);
-        }
-    }
-
     async function handleUnShare(id, email) {
         setIsLoadingUnshare(true);
         const dataToSubmit = {
@@ -118,19 +62,14 @@ export default function Document({ setDocuments }) {
         };
 
         try {
-            const res = await fetch(
-                `${import.meta.env.VITE_BACKENDURL}/share/unshare`,
-                {
-                    method: 'PUT',
-                    body: JSON.stringify(dataToSubmit),
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'x-access-token': JSON.parse(
-                            localStorage.getItem('token')
-                        ),
-                    },
-                }
-            );
+            const res = await fetch(`${import.meta.env.VITE_BACKENDURL}/share/unshare`, {
+                method: 'PUT',
+                body: JSON.stringify(dataToSubmit),
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-access-token': JSON.parse(localStorage.getItem('token')),
+                },
+            });
 
             if (res.status === 401) {
                 localStorage.clear();
@@ -141,13 +80,15 @@ export default function Document({ setDocuments }) {
             const data = await res.json();
 
             if (!res.ok) {
-                throw new Error(
-                    data.message || 'An error occurred. Please try again.'
-                );
+                throw new Error(data.message || 'An error occurred. Please try again.');
             }
 
             setDocAccess(data.document.docAccess);
             setErrorMessage(null);
+
+            if (document.creator !== JSON.parse(localStorage.getItem('email'))) {
+                navigate('/');
+            }
         } catch (error) {
             setErrorMessage(error.message);
         } finally {
@@ -170,13 +111,9 @@ export default function Document({ setDocuments }) {
 
     return (
         <div>
-            <form
-                className='py-6 border-b border-gray-800'
-                onSubmit={handleSubmit}>
+            <form className='py-6 border-b border-gray-800'>
                 <h2 className='text-xl font-medium mb-4'>Edit Document</h2>
-                {errorMessage && (
-                    <div className='text-red-500 my-4'>{errorMessage}</div>
-                )}
+                {errorMessage && <div className='text-red-500 my-4'>{errorMessage}</div>}
                 <label htmlFor='title' className='block text-lg mb-1'>
                     Title
                 </label>
@@ -197,57 +134,34 @@ export default function Document({ setDocuments }) {
                     id='content'
                     value={content}
                     onChange={(e) => setContent(e.target.value)}></textarea>
-                <p className='text-gray-500 text-xs sm:text-sm mt-2'>
-                    Updated at: {formatDate(document.updatedAt)}
-                </p>
-                <div className='flex items-center gap-4 mt-4'>
+                <p className='text-gray-500 text-xs sm:text-sm mt-2'>Updated at: {formatDate(document.updatedAt)}</p>
+                <Link className='inline-block mt-4 px-6 py-2 border border-blue-700 rounded-lg focus:outline-none font-medium' to='/'>
+                    Back
+                </Link>
+                {document.creator !== JSON.parse(localStorage.getItem('email')) ? (
                     <button
-                        className={`px-6 py-2 border border-blue-600 bg-blue-600 hover:bg-blue-700 hover:border-blue-700 rounded-lg font-medium focus:outline-none ${
-                            isSubmitting ? 'opacity-50 cursor-not-allowed' : ''
-                        }`}
-                        type='submit'
-                        disabled={isSubmitting}>
-                        {isSubmitting ? 'Saving...' : 'Save'}
+                        disabled={isLoadingUnshare}
+                        className='mt-4 px-6 py-2 border border-red-500 hover:border-red-800 bg-red-500 hover:bg-red-800 rounded-lg font-medium ml-4'
+                        onClick={() => handleUnShare(document._id, JSON.parse(localStorage.getItem('email')))}>
+                        {isLoadingUnshare ? 'Unsharing' : 'Unshare from account'}
                     </button>
-                    <Link
-                        className='px-6 py-2 border border-blue-700 rounded-lg focus:outline-none font-medium'
-                        to='/'>
-                        Back
-                    </Link>
-                </div>
+                ) : (
+                    ''
+                )}
             </form>
-            {document.creator === JSON.parse(localStorage.getItem('email')) &&
-            docAccess.length !== 0 ? (
-                <p className='text-base mb-2 pr-2'>Shared with</p>
-            ) : (
-                ''
-            )}
-            <div className='flex flex-row'>
+            {document.creator === JSON.parse(localStorage.getItem('email')) && docAccess.length !== 0 ? <p className='text-xl font-medium my-4'>Shared with</p> : ''}
+            <div className='flex flex-col gap-4'>
                 {document.creator === JSON.parse(localStorage.getItem('email'))
-                    ? docAccess
-                        ? docAccess.map((sharedWith) => {
-                              return (
-                                  <div
-                                      key={sharedWith}
-                                      className='flex text-lg mb-1'>
-                                      <p className='text-base md:text-s font-light mb-2 p-2'>
-                                          {sharedWith}
-                                      </p>
-                                      <button
-                                          disabled={isLoadingUnshare}
-                                          className='bg-red-500 hover:bg-red-800 p-2 rounded-md'
-                                          onClick={() =>
-                                              handleUnShare(
-                                                  document._id,
-                                                  sharedWith
-                                              )
-                                          }>
-                                          <Trash2 size={12} />
-                                      </button>
-                                  </div>
-                              );
-                          })
-                        : ''
+                    ? docAccess.map((sharedWith) => {
+                          return (
+                              <div key={sharedWith} className=' border-b border-gray-800 flex items-center gap-5 p-2 max-w-[400px]'>
+                                  <p className='flex-1'>{sharedWith}</p>
+                                  <button disabled={isLoadingUnshare} className='bg-red-500 hover:bg-red-800 p-2 rounded-md' onClick={() => handleUnShare(document._id, sharedWith)}>
+                                      <Trash2 size={18} />
+                                  </button>
+                              </div>
+                          );
+                      })
                     : ''}
             </div>
         </div>
