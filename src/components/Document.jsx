@@ -14,12 +14,14 @@ export default function Document({ setDocuments }) {
     const params = useParams();
     const navigate = useNavigate();
     const id = params.id;
+    const origin = process.env.NODE_ENV === 'production' ? import.meta.env.VITE_BACKENDURL : 'http://localhost:3000';
+    const socket = io.connect(origin);
 
     useEffect(() => {
         const getDoc = async () => {
             setIsLoading(true);
             try {
-                const res = await fetch(`${import.meta.env.VITE_BACKENDURL}/documents/${id}`, {
+                const res = await fetch(`${import.meta.env.VITE_BACKENDURL}/api/documents/${id}`, {
                     headers: {
                         'x-access-token': JSON.parse(localStorage.getItem('token')),
                     },
@@ -32,6 +34,12 @@ export default function Document({ setDocuments }) {
                 }
 
                 const data = await res.json();
+
+                if (data.creator !== JSON.parse(localStorage.getItem('email'))) {
+                    if (!data.docAccess.includes(JSON.parse(localStorage.getItem('email')))) {
+                        navigate('/');
+                    }
+                }
 
                 if (data.message === 'No document found with the provided ID') {
                     navigate('/error');
@@ -54,6 +62,24 @@ export default function Document({ setDocuments }) {
         getDoc();
     }, [id]);
 
+    const handleContentChange = (e) => {
+        const updatedContent = e.target.value;
+        setContent(updatedContent);
+        socket.emit('send_message', { content: updatedContent, docId: id });
+    };
+
+    useEffect(() => {
+        socket.emit('join_room', id);
+
+        socket.on('receive_message', (data) => {
+            setContent(data.content);
+        });
+
+        return () => {
+            socket.disconnect();
+        };
+    }, []);
+
     async function handleUnShare(id, email) {
         setIsLoadingUnshare(true);
         const dataToSubmit = {
@@ -62,7 +88,7 @@ export default function Document({ setDocuments }) {
         };
 
         try {
-            const res = await fetch(`${import.meta.env.VITE_BACKENDURL}/share/unshare`, {
+            const res = await fetch(`${import.meta.env.VITE_BACKENDURL}/api/share/unshare`, {
                 method: 'PUT',
                 body: JSON.stringify(dataToSubmit),
                 headers: {
@@ -133,7 +159,7 @@ export default function Document({ setDocuments }) {
                     name='content'
                     id='content'
                     value={content}
-                    onChange={(e) => setContent(e.target.value)}></textarea>
+                    onChange={handleContentChange}></textarea>
                 <p className='text-gray-500 text-xs sm:text-sm mt-2'>Updated at: {formatDate(document.updatedAt)}</p>
                 <Link className='inline-block mt-4 px-6 py-2 border border-blue-700 rounded-lg focus:outline-none font-medium' to='/'>
                     Back

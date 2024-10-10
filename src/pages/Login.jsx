@@ -16,7 +16,7 @@ export default function Login() {
         const dataToSubmit = { email, password };
 
         try {
-            const res = await fetch(`${import.meta.env.VITE_BACKENDURL}/login`, {
+            const res = await fetch(`${import.meta.env.VITE_BACKENDURL}/api/login`, {
                 method: 'POST',
                 body: JSON.stringify(dataToSubmit),
                 headers: { 'Content-Type': 'application/json' },

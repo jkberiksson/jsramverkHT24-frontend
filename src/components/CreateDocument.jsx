@@ -20,7 +20,7 @@ export default function CreateDocument({ documents, setDocuments }) {
         };
 
         try {
-            const res = await fetch(`${import.meta.env.VITE_BACKENDURL}/documents`, {
+            const res = await fetch(`${import.meta.env.VITE_BACKENDURL}/api/documents`, {
                 method: 'POST',
                 body: JSON.stringify(dataToSubmit),
                 headers: {

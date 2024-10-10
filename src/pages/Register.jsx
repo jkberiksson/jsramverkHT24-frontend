@@ -16,7 +16,7 @@ export default function Register() {
         const dataToSubmit = { email, password };
 
         try {
-            const res = await fetch(`${import.meta.env.VITE_BACKENDURL}/register`, {
+            const res = await fetch(`${import.meta.env.VITE_BACKENDURL}/api/register`, {
                 method: 'POST',
                 body: JSON.stringify(dataToSubmit),
                 headers: { 'Content-Type': 'application/json' },
