@@ -14,11 +14,16 @@ export default function Share({ setToggleShare, id, setDocuments }) {
         const getUsers = async () => {
             setErrorMessage(null);
             try {
-                const res = await fetch(`${import.meta.env.VITE_BACKENDURL}/users`, {
-                    headers: {
-                        'x-access-token': JSON.parse(localStorage.getItem('token')),
-                    },
-                });
+                const res = await fetch(
+                    `${import.meta.env.VITE_BACKENDURL}/users`,
+                    {
+                        headers: {
+                            'x-access-token': JSON.parse(
+                                localStorage.getItem('token')
+                            ),
+                        },
+                    }
+                );
 
                 if (res.status === 401) {
                     localStorage.clear();
@@ -29,7 +34,9 @@ export default function Share({ setToggleShare, id, setDocuments }) {
                 const data = await res.json();
 
                 if (!res.ok) {
-                    throw new Error(data.message || 'An error occurred. Please try again.');
+                    throw new Error(
+                        data.message || 'An error occurred. Please try again.'
+                    );
                 }
 
                 setUsers(data);
@@ -57,14 +64,19 @@ export default function Share({ setToggleShare, id, setDocuments }) {
                 throw new Error('Please provide an email!');
             }
 
-            const res = await fetch(`${import.meta.env.VITE_BACKENDURL}/share`, {
-                method: 'PUT',
-                body: JSON.stringify(dataToSubmit),
-                headers: {
-                    'Content-Type': 'application/json',
-                    'x-access-token': JSON.parse(localStorage.getItem('token')),
-                },
-            });
+            const res = await fetch(
+                `${import.meta.env.VITE_BACKENDURL}/share`,
+                {
+                    method: 'PUT',
+                    body: JSON.stringify(dataToSubmit),
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-access-token': JSON.parse(
+                            localStorage.getItem('token')
+                        ),
+                    },
+                }
+            );
 
             if (res.status === 401) {
                 localStorage.clear();
@@ -75,7 +87,9 @@ export default function Share({ setToggleShare, id, setDocuments }) {
             const data = await res.json();
 
             if (!res.ok) {
-                throw new Error(data.message || 'An error occurred. Please try again.');
+                throw new Error(
+                    data.message || 'An error occurred. Please try again.'
+                );
             }
 
             setSuccessMessage(data.message);
@@ -92,14 +106,31 @@ export default function Share({ setToggleShare, id, setDocuments }) {
     }
 
     return (
-        <div onClick={() => setToggleShare(false)} className='w-screen h-screen fixed left-0 top-0 bg-black bg-opacity-80 z-10 flex items-center justify-center'>
-            <form onSubmit={handleSubmit} onClick={(e) => e.stopPropagation()} className='relative p-8 bg-opacity-100 w-11/12 max-w-md bg-gray-800 shadow-lg rounded-lg z-20'>
-                <h1 className='text-2xl font-medium text-center text-white mb-6'>Share Document</h1>
-                <div className='absolute right-3 top-3 p-1 rounded-md cursor-pointer mt-0 bg-blue-500 hover:bg-blue-600' onClick={() => setToggleShare(false)}>
+        <div
+            onClick={() => setToggleShare(false)}
+            className='w-screen h-screen fixed left-0 top-0 bg-black bg-opacity-80 z-10 flex items-center justify-center'>
+            <form
+                onSubmit={handleSubmit}
+                onClick={(e) => e.stopPropagation()}
+                className='relative p-8 bg-opacity-100 w-11/12 max-w-md bg-gray-800 shadow-lg rounded-lg z-20'>
+                <h1 className='text-2xl font-medium text-center text-white mb-6'>
+                    Share Document
+                </h1>
+                <div
+                    className='absolute right-3 top-3 p-1 rounded-md cursor-pointer mt-0 bg-blue-500 hover:bg-blue-600'
+                    onClick={() => setToggleShare(false)}>
                     <X size={18} />
                 </div>
-                {errorMessage && <div className='text-red-500 text-center mb-6'>{errorMessage}</div>}
-                {successMessage && <div className='text-green-500 text-center mb-6'>{successMessage}</div>}
+                {errorMessage && (
+                    <div className='text-red-500 text-center mb-6'>
+                        {errorMessage}
+                    </div>
+                )}
+                {successMessage && (
+                    <div className='text-green-500 text-center mb-6'>
+                        {successMessage}
+                    </div>
+                )}
                 <div>
                     <select
                         name='email'
@@ -111,7 +142,11 @@ export default function Share({ setToggleShare, id, setDocuments }) {
                             Select a recipient
                         </option>
                         {users
-                            .filter((user) => user.email !== JSON.parse(localStorage.getItem('email')))
+                            .filter(
+                                (user) =>
+                                    user.email !==
+                                    JSON.parse(localStorage.getItem('email'))
+                            )
                             .map((user, index) => (
                                 <option key={index} value={user.email}>
                                     {user.email}
