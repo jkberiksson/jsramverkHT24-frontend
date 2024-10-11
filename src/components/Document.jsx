@@ -14,7 +14,7 @@ export default function Document({ setDocuments }) {
     const params = useParams();
     const navigate = useNavigate();
     const id = params.id;
-    const origin = /* import.meta.env.VITE_BACKENDURL || */ 'http://localhost:3000';
+    const origin = import.meta.env.VITE_BACKENDURL || 'http://localhost:3000';
     const socket = useRef(null);
 
     useEffect(() => {
@@ -123,11 +123,6 @@ export default function Document({ setDocuments }) {
         }
     }
 
-    function formatDate(isoDate) {
-        const date = new Date(isoDate);
-        return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
-    }
-
     if (isLoading) {
         return (
             <div className='flex items-center justify-center my-4'>
@@ -161,7 +156,6 @@ export default function Document({ setDocuments }) {
                     id='content'
                     value={content}
                     onChange={handleContentChange}></textarea>
-                <p className='text-gray-500 text-xs sm:text-sm mt-2'>Updated at: {formatDate(document.updatedAt)}</p>
                 <Link className='inline-block mt-4 px-6 py-2 border border-blue-700 rounded-lg focus:outline-none font-medium' to='/'>
                     Back
                 </Link>
