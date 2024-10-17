@@ -20,14 +20,19 @@ export default function CreateDocument({ documents, setDocuments }) {
         };
 
         try {
-            const res = await fetch(`${import.meta.env.VITE_BACKENDURL}/api/documents`, {
-                method: 'POST',
-                body: JSON.stringify(dataToSubmit),
-                headers: {
-                    'Content-Type': 'application/json',
-                    'x-access-token': JSON.parse(localStorage.getItem('token')),
-                },
-            });
+            const res = await fetch(
+                `${import.meta.env.VITE_BACKENDURL}/api/documents`,
+                {
+                    method: 'POST',
+                    body: JSON.stringify(dataToSubmit),
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-access-token': JSON.parse(
+                            localStorage.getItem('token')
+                        ),
+                    },
+                }
+            );
 
             if (res.status === 401) {
                 localStorage.clear();
@@ -38,7 +43,9 @@ export default function CreateDocument({ documents, setDocuments }) {
             const data = await res.json();
 
             if (!res.ok) {
-                throw new Error(data.message || 'An error occurred. Please try again.');
+                throw new Error(
+                    data.message || 'An error occurred. Please try again.'
+                );
             }
 
             setDocuments([data, ...documents]);
@@ -55,7 +62,9 @@ export default function CreateDocument({ documents, setDocuments }) {
     return (
         <form className='py-6 border-b border-gray-800' onSubmit={handleSubmit}>
             <h2 className='text-xl font-medium mb-4'>Create Document</h2>
-            {errorMessage && <div className='text-red-500 mb-4'>{errorMessage}</div>}
+            {errorMessage && (
+                <div className='text-red-500 mb-4'>{errorMessage}</div>
+            )}
             <label htmlFor='title' className='block text-lg mb-1'>
                 Title
             </label>
@@ -77,7 +86,9 @@ export default function CreateDocument({ documents, setDocuments }) {
                 value={content}
                 onChange={(e) => setContent(e.target.value)}></textarea>
             <button
-                className={`w-full px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg font-medium text-center focus:outline-none ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
+                className={`w-full px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg font-medium text-center focus:outline-none ${
+                    isSubmitting ? 'opacity-50 cursor-not-allowed' : ''
+                }`}
                 type='submit'
                 disabled={isSubmitting}>
                 {isSubmitting ? 'Creating...' : 'Create'}
